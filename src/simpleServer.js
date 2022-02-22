@@ -19,7 +19,7 @@ const app = new express();
 app.use(cors());
 app.use(express.static( __dirname +'/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
-var type = upload.single('recfile');
+var type = upload.single('file');
 var extFile; // Global variable to store extension-name
 const mysql = require('mysql');
 const conn = mysql.createConnection({
