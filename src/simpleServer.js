@@ -14,19 +14,21 @@ const crypto = require('crypto');
 const algorithm = 'aes-256-cbc';
 const key = "hxvywuahdjrduhwjgdmraykjfhzqoihk";
 const iv = crypto.randomBytes(16);
-var upload = multer({dest:'public/'});
+const upload = multer({dest: 'public/'});
 const app = new express();
 app.use(cors());
 app.use(express.static( __dirname +'/public'));
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
 var type = upload.single('file');
 var extFile; // Global variable to store extension-name
 const mysql = require('mysql');
 const conn = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "xxxxx",
-  database: "webprojekti"
+  password: "Jarno123!",
+  database: "xxxxx"
 });
 
 conn.connect(function (err) {
@@ -46,6 +48,11 @@ app.get('/blogSite.html', function (req, res) {
  */
 app.post('/upload', type, function(req, res){
   console.log("Got an upload request!")
+  console.log(req.file);
+
+
+
+ // if(validateImage(req.body.file) !== true){target_path="public/InvalidImage.jpg"}
   if(validateImage(req.file.originalname) !== true){target_path="public/InvalidImage.jpg"}
   var tmp_path = req.file.path;
   var target_path = tmp_path+"."+extFile;
