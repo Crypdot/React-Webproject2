@@ -1,12 +1,13 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from "axios";
-import {Button, Form, InputGroup} from 'react-bootstrap';
+import {Button, Form, InputGroup, Table} from 'react-bootstrap';
 
 
 const Home = () => {
   const [title, setTitle] = useState('')
   const [file, setFile] = useState()
   const [description, setDescription] = useState('')
+  const [images, setImages] = useState([])
 
 
 
@@ -53,6 +54,20 @@ const Home = () => {
 
   }
 
+
+    useEffect(() => {
+      console.log("testi");
+      axios.get('http://localhost:8081/images')
+          .then(function (res) {
+            console.log(res.data);
+            const imageData = res.data;
+            setImages(imageData);
+          })
+
+
+    }, [])
+
+
     const handleSubmit = (event) => {
     const form = event.currentTarget;
     if(form.checkValidity() === false) {
@@ -62,6 +77,8 @@ const Home = () => {
 
     addImage(file, title, description);
     }
+    console.log(images);
+   // console.log(images[4].ID)
   return (
       <div className="container">
         <Form encType="multipart/form-data" onSubmit={handleSubmit} >
@@ -100,7 +117,24 @@ const Home = () => {
 
 
         </Form>
+      <div>
+        <Table >
+          <tbody>{images.map((image, i) => {
+          return [
+            <tr key={image.id}>
+              <td>
+                <img src={""+image.imagelink} alt={image.title}/>
+                <p>{image.description}</p>
+              </td>
+            </tr>
+              ];
+            })}
 
+
+
+          </tbody>
+        </Table>
+      </div>
 
       </div>
   )
