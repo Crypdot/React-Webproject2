@@ -91,7 +91,6 @@ function authenticateToken(req, res, next){
   })
 }
 
-
 //PRIORITY 2 Testing uploading
 app.post('/upload-file',authenticateToken, upload.single('dataFile'), (req, res, next)=>{
   const file = req.file
@@ -102,8 +101,13 @@ app.post('/upload-file',authenticateToken, upload.single('dataFile'), (req, res,
 
   (async() => {
     try {
-      var sql = "INSERT INTO postdata(imagelink, title, description) values(?,?,?)"
-      const rows = await query(sql, [req.file.filename, req.body.postTitle, req.body.postDescription]);
+      let username = JSON.stringify(req.user.name.username)
+      const results = await query("SELECT * FROM user WHERE username = "+username)
+      let userID = results[0].userID
+      console.log("Uploader's userID -> "+userID)
+
+      let sql = "INSERT INTO postdata(imagelink, title, description, userID) values(?,?,?,?)"
+      const rows = await query(sql, [req.file.filename, req.body.postTitle, req.body.postDescription, userID]);
       console.log("Added rows: "+ JSON.stringify(rows))
     }catch (err) {
       console.log("Error in database!"+ err);
@@ -114,7 +118,6 @@ app.post('/upload-file',authenticateToken, upload.single('dataFile'), (req, res,
     }
   })()
 })
-
 
 /**
  * Uploads a post's data to the SQL server. The data includes the title, description and image-data, and is stored with a prepared SQL query for added security.

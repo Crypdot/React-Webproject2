@@ -76,7 +76,7 @@ app.post('/signup', urlencodedParser, (req, res) =>{
 
         sql = "INSERT INTO user (email, username, password) VALUES (?, ?, ?)"
         result = await query(sql, [email, username, password])
-        res.status(201).send("User added: "+username)
+        res.status(201).send("User added: "+username).send("User added!")
       }
     }catch(e){
       console.log("Error in SIGNUP -> "+e)
