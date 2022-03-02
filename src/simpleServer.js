@@ -24,18 +24,6 @@ app.use(express.json())
 app.use(express.static( __dirname +'/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-//Testing purposes ->
-const posts=[
-  {
-    username: 'Kyle',
-    title: 'Post 1'
-  },
-  {
-    username: 'Jim',
-    title: 'Post 2'
-  }
-]
-
 var type = upload.single('file');
 var extFile; // Global variable to store extension-name
 const mysql = require('mysql');
@@ -92,23 +80,13 @@ app.post('/upload', type, function(req, res){
   res.send("We done!");
 })
 
-app.get('/posts', authenticateToken, (req, res) =>{
-  res.json(posts.filter(post => post.username === req.user.name))
-})
-
-app.post('/login', (req, res) =>{
-  //Authenticate user (Loop back to this!)
-
-  console.log('Got this username -> '+req.body.username)
-  const username = req.body.username;
-  const user = { name: username }
-  const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "120s"
-  })
-
-  res.json({accessToken: accessToken})
-})
-
+/**
+ * Middleware function to authenticate tokens
+ * @param req
+ * @param res
+ * @param next
+ * @returns {this}
+ */
 function authenticateToken(req, res, next){
   const authHeader = req.headers['authorization']
   const token = authHeader && authHeader.split(' ')[1]
