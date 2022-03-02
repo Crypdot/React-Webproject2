@@ -2,22 +2,18 @@ require('dotenv').config()
 /**
  * CURRENT ISSUES -> Currently, the usernames and emails aren't stored very securely. They're just plain text, but that's just a matter of implementing it, honestly.
  * authServer.js contains an API-interface that allows users to sign up and log in as needed to access various services.
- * @authors Jarno Kaikkonen & Alexander San Miguel
+ * @author Alexander San Miguel
  */
-
 const jwt = require('jsonwebtoken')
 const express = require('express');
-const fs = require('fs');
 const cors = require('cors');
-const url = require('url');
 const bodyParser = require('body-parser');
 const multer  = require('multer');
-const path = require('path');
 const crypto = require('crypto');
-const algorithm = 'aes-256-cbc';
 const key = "hxvywuahdjrduhwjgdmraykjfhzqoihk";
 const iv = crypto.randomBytes(16);
-var upload = multer({dest:'public/'});
+const secrets = require('../config/secrets.js')
+console.log('show='+secrets.jwtSecret)
 const app = new express();
 app.use(cors());
 app.use(express.json())
@@ -48,7 +44,9 @@ conn.connect(function (err) {
 })
 
 var util = require('util');
-const bcrypt = require('bcrypt'); // for async calls
+const bcrypt = require('bcrypt');
+
+
 const query = util.promisify(conn.query).bind(conn);
 app.get('/blogSite.html', function (req, res) {
   console.log("Line 55 app get blogsite.html")
@@ -87,14 +85,12 @@ app.post('/signup', urlencodedParser, (req, res) =>{
 })
 
 app.post('/login', (req, res) =>{
-  let username = req.body.username;
-
   (async() => {
     try{
       let sql = "SELECT * FROM user WHERE username = ?"
-      let result = await query(sql, [username])
+      let result = await query(sql, [req.body.username])
 
-      if(result.length === 0){res.status(404).send("Username not found!")}
+      if(result.length === 0){ return res.status(404).send("Username not found!")}
 
       console.log("Username: "+req.body.username+" found, checking for a match now, against the password: "+req.body.password)
       let foundHashed = (result[0].password).toString()
@@ -107,8 +103,11 @@ app.post('/login', (req, res) =>{
           username: req.body.username,
           password: foundHashed
         }
-        const accessToken = generateAccessToken(user)
-        res.json({accessToken: accessToken})
+        const accessToken = jwt.sign({name: user}, '$process.env.JWT_SECRET', {
+          expiresIn: "30m"
+        })
+        res.status(202).json({accessToken: accessToken})
+        //res.json({accessToken: accessToken})
       }else{ res.send("Password incorrect") }
     }catch(e){
       console.log("Error in LOGIN -> "+e)
@@ -117,7 +116,8 @@ app.post('/login', (req, res) =>{
 })
 
 function generateAccessToken(user){
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "10m" })
+  console.log("FUNCTION generateAccessToken")
+  return jwt.sign({name: user}, secrets.jwtSecret, { expiresIn: "30m" })
 }
 
 var server = app.listen(8082, function (){
