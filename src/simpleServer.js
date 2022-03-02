@@ -1,8 +1,11 @@
+require('dotenv').config()
 /**
  * simpleServer.js contains the Rest-api, with functionality of adding posts to the server, as well as adding and fetching comments for individual post's contained within the server.
  * @authors Jarno Kaikkonen & Alexander San Miguel
  */
 
+//const secrets = require('./config/secrets.js')
+const jwt = require('jsonwebtoken')
 const express = require('express');
 const fs = require('fs');
 const cors = require('cors');
@@ -17,8 +20,22 @@ const iv = crypto.randomBytes(16);
 var upload = multer({dest:'public/'});
 const app = new express();
 app.use(cors());
+app.use(express.json())
 app.use(express.static( __dirname +'/public'));
 app.use(bodyParser.urlencoded({ extended: true }));
+
+//Testing purposes ->
+const posts=[
+  {
+    username: 'Kyle',
+    title: 'Post 1'
+  },
+  {
+    username: 'Jim',
+    title: 'Post 2'
+  }
+]
+
 var type = upload.single('file');
 var extFile; // Global variable to store extension-name
 const mysql = require('mysql');
@@ -36,6 +53,7 @@ conn.connect(function (err) {
 var util = require('util'); // for async calls
 const query = util.promisify(conn.query).bind(conn);
 app.get('/blogSite.html', function (req, res) {
+  console.log("Line 55 app get blogsite.html")
   res.sendFile( __dirname + "/" + "blogSite.html" );
 })
 
@@ -73,6 +91,38 @@ app.post('/upload', type, function(req, res){
   })()
   res.send("We done!");
 })
+
+app.get('/posts', authenticateToken, (req, res) =>{
+  res.json(posts.filter(post => post.username === req.user.name))
+})
+
+app.post('/login', (req, res) =>{
+  //Authenticate user (Loop back to this!)
+
+  console.log('Got this username -> '+req.body.username)
+  const username = req.body.username;
+  const user = { name: username }
+  const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "120s"
+  })
+
+  res.json({accessToken: accessToken})
+})
+
+function authenticateToken(req, res, next){
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+
+  if (token == null) return res.sendStatus(401) // Invalid token
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) =>{
+    if(err) return res.sendStatus(403) // Token exists but this token isn't valid -> No access
+    req.user = user
+    next()
+  })
+
+}
+
 /**
  * Fetches imagepath, title, description from SQL server and returns JSON.
  */
