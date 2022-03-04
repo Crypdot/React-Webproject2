@@ -105,10 +105,6 @@ function checkUserValidity(result, email, username){
 
   (async() =>{
     try{
-      let sql = "SELECT username, email from user"
-      let result = await query(sql)
-      console.log(result)
-
       for(let i = 0; i < result.length; i++){
         console.log("Comparing "+comparableName+" to "+result[i].username.toLowerCase()+" and "+comparableEmail+" to "+result[i].email.toLowerCase())
         if(comparableName === result[i].username.toLowerCase() || comparableEmail === result[i].email.toLowerCase()){
@@ -122,7 +118,6 @@ function checkUserValidity(result, email, username){
     }
   })()
 }
-
 
 function checkUsername(username) {
   let comparable = username.toLowerCase();
