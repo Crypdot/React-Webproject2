@@ -57,13 +57,26 @@ app.get('/blogSite.html', function (req, res) {
 app.post('/signup', urlencodedParser, (req, res) =>{
   let email, password, username
 
-  console.log("Got this email -> "+req.body.email+" and this password -> "+req.body.password);
+  console.log("Got this email -> "+req.body.email+" and this password -> "+req.body.password+" and this username -> "+req.body.username);
+
+  if(req.body.username.length===0 || req.body.email.length===0 || req.body.password.length ===0){
+    return res.status(408).send("One or more empty fields!")
+  }
 
   (async() =>{
     try{
       email = req.body.email
       username = req.body.username
       const hashedPassword = await bcrypt.hash(req.body.password, 10)
+
+      let sqlTest = "SELECT username, email FROM user"
+      let testResult = await query(sqlTest)
+      console.log("The test gave us -> "+testResult[0].email.toLowerCase())
+
+      if(!checkUserValidity(testResult, email, username)){
+        console.log("Invalid username!")
+        return res.status(203).send("Duplicate entry!")
+      }
 
       let sql = "SELECT * FROM user WHERE email = ?"
       let result = await query(sql, [email])
@@ -85,6 +98,54 @@ app.post('/signup', urlencodedParser, (req, res) =>{
     }
   })()
 })
+
+function checkUserValidity(result, email, username){
+  let comparableName = username.toLowerCase();
+  let comparableEmail = email.toLowerCase();
+
+  (async() =>{
+    try{
+      let sql = "SELECT username, email from user"
+      let result = await query(sql)
+      console.log(result)
+
+      for(let i = 0; i < result.length; i++){
+        console.log("Comparing "+comparableName+" to "+result[i].username.toLowerCase()+" and "+comparableEmail+" to "+result[i].email.toLowerCase())
+        if(comparableName === result[i].username.toLowerCase() || comparableEmail === result[i].email.toLowerCase()){
+          console.log("This already exists!")
+          return false;
+        }
+      }
+      return true
+    }catch(e){
+      console.log("Something went wrong -> "+e)
+    }
+  })()
+}
+
+
+function checkUsername(username) {
+  let comparable = username.toLowerCase();
+  (async() =>{
+    try{
+      let sql = "SELECT username, email from user"
+      let result = await query(sql)
+      console.log(result)
+
+      for(let i = 0; i < result.length; i++){
+        console.log("Comparing "+comparable+" to "+result[i].username.toLowerCase())
+        if(comparable === result[i].username.toLowerCase()){
+          console.log("This already exists!")
+          return false;
+        }
+      }
+      return true
+    }catch(e){
+      console.log("Something went wrong -> "+e)
+    }
+  })()
+}
+
 
 app.post('/login', (req, res) =>{
   console.log("Username given to auth server -> "+req.body.username+" and password given to auth server - >"+req.body.password);
