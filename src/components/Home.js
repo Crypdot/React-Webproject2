@@ -8,6 +8,7 @@ import {
   Modal,
   Table,
 } from 'react-bootstrap';
+import Comments from './Comments';
 
 
 const Home = () => {
@@ -17,7 +18,7 @@ const Home = () => {
   const [images, setImages] = useState([]);
   const [show, setShow] = useState(false);
   const [comments, setComments] = useState([]);
-  const [commentData, setCommentdata] = useState('');
+  const [commentData, setCommentdata] = useState([]);
   const [testID, setTestID] = useState([]);
 
   const handleClose = () => setShow(false);
@@ -42,7 +43,7 @@ const Home = () => {
 
   */
     const formData = new FormData();
-    formData.append('dataFile', file[0]);
+    formData.append('file', file[0]);
     formData.append('postTitle', title);
     formData.append('postDescription', description);
     /*
@@ -69,7 +70,7 @@ const Home = () => {
 
 
   useEffect((postID, commentdata) => {
-    console.log("testi");
+    console.log("Kuvatt testi");
     axios.get('http://localhost:8081/images')
         .then(function (res) {
           console.log(res.data);
@@ -84,7 +85,10 @@ const Home = () => {
     console.log("testi");
     console.log(postID);
     setTestID(postID);
-    axios.get('http://localhost:8081/comments?postID=' +postID)
+    axios.get('http://localhost:8081/comments', {
+      params: {
+        postID: postID
+      }})
         .then(function (res) {
           console.log(res.data);
           const commentsData = res.data;
@@ -93,28 +97,28 @@ const Home = () => {
 
 
   }
+  /*
+    const addComment = (postID, commentData) => {
+      console.log("testi");
 
-  const addComment = (postID, commentData) => {
-    console.log("testi");
+      axios.post('http://localhost:8081/addcomment?postID='+postID+"&commentField="+commentData)
+          .then(function (res) {
+            console.log("This"+res.data);
 
-    axios.post('http://localhost:8081/addcomment?postID='+postID+"&commentField="+commentData)
-        .then(function (res) {
-          console.log("This"+res.data);
-
-        })
+          })
 
 
-  }
-  const handleCommentSubmit = (event) => {
-    const form = event.currentTarget;
-    console.log("here");
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
     }
-    addComment(testID, commentData);
-  }
-
+    const handleCommentSubmit = (event) => {
+      const form = event.currentTarget;
+      console.log("here");
+      if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      addComment(testID, commentData);
+    }
+  */
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
@@ -150,7 +154,7 @@ const Home = () => {
                 onChange={(e => setFile(e.target.files))}
                 required/>
           </Form.Group>
-          <Form.Label>Kuvaus:</Form.Label>
+          <Form.Label>Paikka:</Form.Label>
           <Form.Group>
             <Form.Control
                 type="text"
@@ -174,7 +178,8 @@ const Home = () => {
                   <td>
                     <img src={""+image.imagelink} alt={image.title}/>
                     <p>{image.description}</p>
-                    <Button onClick={() => {setShow(true); getComments(image.ID)}} >Show comments {image.ID}</Button>
+                    <Button onClick={() => {setShow(true); getComments(image.ID) }}>Show comments {image.ID}</Button>
+
                   </td>
                 </tr>
               ];
@@ -182,36 +187,26 @@ const Home = () => {
             </tbody>
           </Table>
         </div>
-        <Modal show={show} onHide={handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Comments</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>{comments.map((comment, i) => {
+
+        <Comments title="Comments" postID={testID} onClose={() => setShow(false)} show={show}>
+          <tr>
+            <th>Date</th>
+            <th>Comment</th>
+          </tr>
+          {comments.map((comment) => {
             return [
               <tr key={comment.id}>
-                <td>{comment.time} : {comment.commentdata}</td>
-
+                <td>{comment.time} : -></td>
+                <td>{comment.commentdata}</td>
               </tr>
-            ];
+
+            ]
           })}
-          </Modal.Body>
-          <Modal.Footer >
-            <p>{testID} Text</p>
-            <Form encType="multipart/form-data" onSubmit={handleCommentSubmit}>Add comment
-              <Form.Group >
-                <Form.Control type="text" value={commentData} onChange={(e => setCommentdata(e.target.value))}></Form.Control>
 
-              </Form.Group>
-              <Button size="sm" type="submit">Add</Button>
-            </Form>
-
-          </Modal.Footer>
-
-
-        </Modal>
-
+        </Comments>
       </div>
   )
 
 }
 export default Home
+
