@@ -53,8 +53,10 @@ app.get('/blogSite.html', function (req, res) {
   res.sendFile( __dirname + "/" + "blogSite.html" );
 })
 
+//Currently doesn't check if the user name already exists. Should probably convert username to lowercase and compare it against all the ones found in the database. Already dies this for emails so it shouldn't be difficult.
 app.post('/signup', urlencodedParser, (req, res) =>{
   let email, password, username
+
   console.log("Got this email -> "+req.body.email+" and this password -> "+req.body.password);
 
   (async() =>{
@@ -85,12 +87,15 @@ app.post('/signup', urlencodedParser, (req, res) =>{
 })
 
 app.post('/login', (req, res) =>{
+  console.log("Username given to auth server -> "+req.body.username+" and password given to auth server - >"+req.body.password);
   (async() => {
     try{
       let sql = "SELECT * FROM user WHERE username = ?"
       let result = await query(sql, [req.body.username])
 
-      if(result.length === 0){ return res.status(404).send("Username not found!")}
+      if(result.length === 0){
+        console.log("Username not found")
+        return res.status(402).send("Username not found!")}
 
       console.log("Username: "+req.body.username+" found, checking for a match now, against the password: "+req.body.password)
       let foundHashed = (result[0].password).toString()
@@ -108,7 +113,9 @@ app.post('/login', (req, res) =>{
         })
         res.status(202).json({accessToken: accessToken})
         //res.json({accessToken: accessToken})
-      }else{ res.send("Password incorrect") }
+      }else{
+        console.log("Password was incorrect!")
+        return res.status(401).send("Password incorrect") }
     }catch(e){
       console.log("Error in LOGIN -> "+e)
     }

@@ -42,7 +42,7 @@ const Home = () => {
 
   */
     const formData = new FormData();
-    formData.append('file', file[0]);
+    formData.append('dataFile', file[0]);
     formData.append('postTitle', title);
     formData.append('postDescription', description);
     /*
