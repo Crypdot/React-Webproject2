@@ -203,7 +203,7 @@ app.get('/comments', function(req, res){
  * Adds comment to SQL.
  * Gets postID and comment-string from url and sends prepared SQL query to the postcomments table and sends it back so the comment is shown on page right after
  */
-app.post('/addcomment', authenticateToken, (req, res) => {
+app.post('/add-comment', authenticateToken, (req, res) => {
   const postID = req.query.postID;
 
   (async() =>{
