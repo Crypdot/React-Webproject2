@@ -43,7 +43,7 @@ const mysql = require('mysql');
 const conn = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "xxxxx",
+  password: "Jarno123!",
   database: "webprojekti"
 });
 
@@ -158,13 +158,14 @@ app.post('/upload', type, authenticateToken, (req, res) => {
  * Fetches imagepath, title, description from SQL server and returns JSON.
  */
 app.get('/images', function (req, res){
-  const sql = "SELECT ID,imagelink, title, description FROM postdata";
+  const sql = "SELECT ID, imagelink, title, description FROM postdata";
   console.log("Got an image request!");
   (async() => {
     try {
       const img = await query(sql);
-      decryptImageData(img);
       res.json(img);
+      //decryptImageData(img);
+
     }catch (err) {
       console.log("Error in database!"+ err);
     }

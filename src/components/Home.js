@@ -43,7 +43,7 @@ const Home = () => {
 
   */
     const formData = new FormData();
-    formData.append('file', file[0]);
+    formData.append('dataFile', file[0]);
     formData.append('postTitle', title);
     formData.append('postDescription', description);
     /*
@@ -55,8 +55,17 @@ const Home = () => {
     */
     //console.log(formData.get('file'));
     // console.log(formData.get('postTitle'))
+    let tokenString, tokenObj, tokenKey = 'myToken'
+    tokenString = localStorage.getItem(tokenKey)
 
-    axios.post('http://localhost:8081/upload', formData )
+    tokenObj = JSON.parse(tokenString)
+    console.log("This was the token object -> "+tokenObj)
+
+    console.log("tokenObj.accessToken: "+tokenObj.accessToken)
+
+    axios.post('http://localhost:8081/upload-file', formData,
+        {headers: {Authorization: 'Bearer: '+tokenObj.accessToken}})
+
 
         .then(function(response) {
           console.log(response)
@@ -150,7 +159,7 @@ const Home = () => {
             <Form.Control
                 type="file"
                 //value={file}
-                name="file"
+                name="dataFile"
                 onChange={(e => setFile(e.target.files))}
                 required/>
           </Form.Group>
