@@ -71,26 +71,16 @@ app.post('/signup', urlencodedParser, (req, res) =>{
 
       let sqlTest = "SELECT username, email FROM user"
       let testResult = await query(sqlTest)
-      console.log("The test gave us -> "+testResult[0].email.toLowerCase())
 
       if(!checkUserValidity(testResult, email, username)){
-        console.log("Invalid username!")
         return res.status(203).send("Duplicate entry!")
-      }
-
-      let sql = "SELECT * FROM user WHERE email = ?"
-      let result = await query(sql, [email])
-
-      if(result.length !== 0){
-        console.log("Email exists already!")
-        res.sendStatus(202)
       }else{
         console.log("Email doesn't exist, adding user!")
         password = hashedPassword//Is there a point to doing it like this or am I just really tired?
         console.log("Hashed: ", password)
 
-        sql = "INSERT INTO user (email, username, password) VALUES (?, ?, ?)"
-        result = await query(sql, [email, username, password])
+        let sql = "INSERT INTO user (email, username, password) VALUES (?, ?, ?)"
+        let result = await query(sql, [email, username, password])
         res.status(201).send("User added: "+username).send("User added!")
       }
     }catch(e){
@@ -100,23 +90,20 @@ app.post('/signup', urlencodedParser, (req, res) =>{
 })
 
 function checkUserValidity(result, email, username){
+  if(result.length === 0){return true}
+
   let comparableName = username.toLowerCase();
   let comparableEmail = email.toLowerCase();
 
-  (async() =>{
-    try{
-      for(let i = 0; i < result.length; i++){
-        console.log("Comparing "+comparableName+" to "+result[i].username.toLowerCase()+" and "+comparableEmail+" to "+result[i].email.toLowerCase())
-        if(comparableName === result[i].username.toLowerCase() || comparableEmail === result[i].email.toLowerCase()){
-          console.log("This already exists!")
-          return false;
-        }
-      }
-      return true
-    }catch(e){
-      console.log("Something went wrong -> "+e)
+  for(let i = 0; i < result.length; i++){
+    console.log("Comparing "+comparableName+" to "+result[i].username.toLowerCase()+" and "+comparableEmail+" to "+result[i].email.toLowerCase())
+    if(comparableName === result[i].username.toLowerCase() || comparableEmail === result[i].email.toLowerCase()){
+      console.log("This already exists!")
+      return false;
     }
-  })()
+  }
+  console.log("Valid user!")
+  return true;
 }
 
 function checkUsername(username) {
