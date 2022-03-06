@@ -82,12 +82,10 @@ const Home = () => {
     console.log("Kuvatt testi");
     axios.get('http://localhost:8081/images')
         .then(function (res) {
-          console.log(res.data);
+          console.log("RES DATA ===> "+res.data);
           const imageData = res.data;
           setImages(imageData);
         })
-
-
   }, [])
 
   const getComments = (postID) => {
@@ -136,7 +134,7 @@ const Home = () => {
       event.stopPropagation();
     }
 
-    addImage(file, title, description);
+    addImage(file, title, description).then(r => console.log("Test"));
   }
 
   console.log(images);
@@ -175,9 +173,6 @@ const Home = () => {
 
           <Button type="submit">Send</Button>
 
-
-
-
         </Form>
         <div>
           <Table >
@@ -185,10 +180,10 @@ const Home = () => {
               return [
                 <tr key={image.id}>
                   <td>
-                    <img src={""+image.imagelink} alt={image.title}/>
+                    <p>{image.title}</p>
+                    <img src={require(`../Images/${image.imagelink}`)} alt={image.title}/>
                     <p>{image.description}</p>
                     <Button onClick={() => {setShow(true); getComments(image.ID) }}>Show comments {image.ID}</Button>
-
                   </td>
                 </tr>
               ];
@@ -207,6 +202,7 @@ const Home = () => {
               <tr key={comment.id}>
                 <td>{comment.time} : -></td>
                 <td>{comment.commentdata}</td>
+
               </tr>
 
             ]

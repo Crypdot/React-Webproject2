@@ -21,7 +21,7 @@ const iv = crypto.randomBytes(16);
 //PRIORITY 1
 var storage = multer.diskStorage({
   destination: function(req, file, cb){
-    cb(null, 'public')
+    cb(null, 'Images')
   },
   filename: function (req, file, cb){
     cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`)
@@ -43,7 +43,7 @@ const mysql = require('mysql');
 const conn = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "Jarno123!",
+  password: "xxxxx",
   database: "webprojekti"
 });
 
@@ -205,7 +205,7 @@ app.get('/comments', function(req, res){
  * Gets postID and comment-string from url and sends prepared SQL query to the postcomments table and sends it back so the comment is shown on page right after
  */
 app.post('/add-comment', authenticateToken, (req, res) => {
-  const postID = req.query.postID;
+  const postID = req.body.postID;
 
   (async() =>{
     try{
@@ -215,7 +215,7 @@ app.post('/add-comment', authenticateToken, (req, res) => {
       console.log("Uploader's userID -> "+userID)
 
       const sql = "INSERT INTO postcomments (postdata_ID, commentdata, userID) VALUES (?,?,?);";
-      const rows = await query(sql, [postID, req.query.commentdata, userID]);
+      const rows = await query(sql, [postID, req.body.commentdata, userID]);
       console.log(rows);
       let string = JSON.stringify(rows);
       res.json(string);
