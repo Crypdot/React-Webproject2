@@ -21,7 +21,7 @@ const iv = crypto.randomBytes(16);
 //PRIORITY 1
 var storage = multer.diskStorage({
   destination: function(req, file, cb){
-    cb(null, 'Images')
+    cb(null, __dirname+'/Images')
   },
   filename: function (req, file, cb){
     cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`)
