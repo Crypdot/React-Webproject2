@@ -3,6 +3,8 @@ import {Form, Button, Modal} from 'react-bootstrap'
 import './Modal.css'
 import axios from 'axios';
 import SignupModal from './SignupModal';
+import ReactDOM from 'react-dom';
+import {CSSTransition} from 'react-transition-group';
 
 const LoginModal = props => {
   const [username, setUsername] = useState('')
@@ -105,7 +107,12 @@ const LoginModal = props => {
     }
   }
 
-  return (
+  return ReactDOM.createPortal(
+      <CSSTransition
+          in={props.show}
+          unmountOnExit
+          timeout={{ enter: 0, exit: 300 }}
+      >
       <div className={`modal ${props.show ? 'show' : ''}`}>
         <div className="modal-content">
           <Form className={`form ${props.show ? 'show' : ''}`}  >
@@ -145,8 +152,11 @@ const LoginModal = props => {
         </Modal>
 
       </div>
-
+      </CSSTransition>,
+      document.getElementById("root")
   );
+
+
 }
 
 export default LoginModal

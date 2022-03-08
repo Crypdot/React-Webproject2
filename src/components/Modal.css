@@ -13,11 +13,16 @@
     pointer-events: none;
     border-color: magenta;
 }
-
-.modal.show{
+.modal.enter-done {
     opacity: 1;
     pointer-events: visible;
 }
+
+.modal.exit {
+    opacity: 0;
+}
+
+
 
 .modal-content {
     width: 500px;
@@ -44,12 +49,3 @@
     border-bottom: 1px solid #eee;
 }
 
-.modal.forml{
-    opacity: 0;
-    background-color: magenta;
-}
-
-.modal.forml.show{
-    opacity: 1;
-    pointer-events: visible;
-}
