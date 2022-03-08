@@ -10,3 +10,7 @@
 #ImageDescription{
     color: white;
 }
+
+#homeImage{
+    max-width: 75%;
+}

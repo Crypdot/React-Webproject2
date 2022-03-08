@@ -28,6 +28,39 @@
     transform: translateY(-200px);
 }
 
+.modal-content #commentDate{
+    color: black;
+}
+
+.modal-content #commentTable, th, td{
+    border: 1px solid gray;
+}
+
+.modal-content #commentTable{
+    border-collapse:separate;
+    border-spacing:5px;
+
+    background-color: #fefefe;
+    border: 1px solid #888;
+    width: 100%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    color: black;
+}
+
+.commentRow{
+
+    background-color: #fefefe;
+    border: 1px solid #888;
+    width: 50%;
+    color: black;
+}
+
+#commentUsername{
+    font-style: italic;
+
+}
+
+
 .modal.enter-done .modal-content {
     transform: translateY(0);
 }
@@ -50,3 +83,4 @@
     border-top: 1px solid #eee;
     border-bottom: 1px solid #eee;
 }
+

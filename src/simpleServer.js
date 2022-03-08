@@ -21,7 +21,7 @@ const iv = crypto.randomBytes(16);
 //PRIORITY 1
 var storage = multer.diskStorage({
   destination: function(req, file, cb){
-    cb(null, __dirname+'/Images')
+    cb(null, path.resolve(__dirname+'/../public'))
   },
   filename: function (req, file, cb){
     cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`)
@@ -29,7 +29,7 @@ var storage = multer.diskStorage({
 })
 var upload = multer({storage: storage})
 
-
+console.log("Tessssting the process env thing ->"+process.cwd())
 
 const app = new express();
 app.use(cors());
@@ -43,7 +43,7 @@ const mysql = require('mysql');
 const conn = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "xxxxx",
+  password: "root",
   database: "webprojekti"
 });
 
@@ -218,7 +218,7 @@ app.post('/add-comment', authenticateToken, (req, res) => {
       const rows = await query(sql, [postID, req.body.commentdata, userID]);
       console.log(rows);
       let string = JSON.stringify(rows);
-      res.json(string);
+      return res.json(string);
     }catch(err){console.log("Error in database!"+err)}
     finally{
       console.log("Comment added!")

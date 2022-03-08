@@ -93,9 +93,9 @@ const Home = () => {
                 <tr key={image.id}>
                   <td>
                     <p id="ImageTitle">{image.title}</p>
-                    <img src={require(`../Images/${image.imagelink}`)} alt={image.title}/>
+                    <img id="homeImage" src={image.imagelink} alt={image.title}/>
                     <p id="ImageDescription">{image.description}</p>
-                    <Button onClick={() => {setShow(true); getComments(image.ID) }}>Show comments {image.ID}</Button>
+                    <Button onClick={() => {setShow(true); getComments(image.ID) }}>Show comments for {image.title}</Button>
 
                   </td>
                 </tr>
@@ -106,18 +106,22 @@ const Home = () => {
         </div>
 
         <Comments title="Comments" postID={testID} onClose={() => setShow(false)} show={show}>
+          <table id="commentTable">
           <tr>
-            <th>Date</th>
+            <th id="commentDate">Date</th>
             <th>Comment</th>
+            <th>User</th>
           </tr>
           {comments.map((comment) => {
             return [
-              <tr key={comment.id}>
-                <td>{comment.time} : -></td>
+              <tr className="commentRow" key={comment.id}>
+                <td>{comment.time}</td>
                 <td>{comment.commentdata}</td>
+                <td id="commentUsername">{comment.username}</td>
               </tr>
             ]
-          })}
+
+          })}</table>
 
         </Comments>
       </div>

@@ -83,11 +83,10 @@ const Comments = (props) => {
         <div className="modal" onClick={props.onClose}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h4 className="modal-title">{props.title}: {props.postID}</h4>
+              <h4 className="modal-title">{props.title}</h4>
             </div>
             <div className="modal-body">
               {props.children}
-
             </div>
             <div className="modal-footer">
               <Form onSubmit={handleCommentSubmit} >Add comment
