@@ -43,7 +43,7 @@ const mysql = require('mysql');
 const conn = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "xxxxx",
+  password: "root",
   database: "webprojekti"
 });
 
@@ -225,6 +225,27 @@ app.post('/add-comment', authenticateToken, (req, res) => {
     }
   })()
 })
+
+app.get('/fetch-image', (req, res) => {
+  console.log("Got into fetch image!")
+  const postID = req.query.postID;
+  console.log(postID+"OIASJDOAIJDOI");
+  (async() => {
+    try{
+      const sql = "SELECT imagelink FROM postdata WHERE ID=?"
+      let link = await query(sql, [postID])
+      console.log(link)
+
+      let postLink = JSON.stringify(link[0].imagelink)
+      res.json(postLink)
+
+    }catch(err){console.log("Error -> "+err)}
+    finally{
+      console.log("Image found!")
+    }
+  })()
+})
+
 
 var server = app.listen(8081, function (){
   var host = server.address().address;
