@@ -3,6 +3,7 @@ import LoginModal from './LoginModal';
 import SignupModal from './SignupModal';
 import ImageForm from './ImageForm'
 import React, {useState} from 'react';
+import './NavBar.css'
 
 const NavBar = () =>{
   const [showLogin, setShowLogin] = useState(false)
@@ -10,15 +11,20 @@ const NavBar = () =>{
   const [uploadShow, setUploadShow] = useState(false)
 
   return(
-      <div className="container">
-      <Button onClick={() => setUploadShow(true)}>Upload image</Button>
-        <ImageForm title="Upload" onClose={() => setUploadShow(false)} show={uploadShow}></ImageForm>
+      <div className="NavBar">
+        <div className="Upload">
+          <Button className="Upload" onClick={() => setUploadShow(true)}>Upload image</Button>
+          <ImageForm title="Upload" onClose={() => setUploadShow(false)} show={uploadShow}/>
+        </div>
 
-      <Button onClick={() => setShowLogin(true)}>Log in!</Button>
-        <LoginModal onClose={() => setShowLogin(false)} show={showLogin} />
+        <div className="User">
+          <Button className="Login" onClick={() => setShowLogin(true)}>Log in!</Button>
+          <LoginModal onClose={() => setShowLogin(false)} show={showLogin} />
 
-        <Button onClick={() => setSign(true)}>Sign up!</Button>
-        <SignupModal onClose={() => setSign(false)} show={showSign} />
+          <Button className="Signup" onClick={() => setSign(true)}>Sign up!</Button>
+          <SignupModal onClose={() => setSign(false)} show={showSign} />
+        </div>
+
       </div>
   )
 }

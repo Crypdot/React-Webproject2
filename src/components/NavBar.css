@@ -1,0 +1,21 @@
+.NavBar {
+    position: fixed;
+    height: 70px;
+    width: 100%;
+    z-index: 10;
+    background-color: #282c34;
+    justify-content: space-between;
+    display: flex;
+}
+
+.NavBar .Upload {
+    position: center;
+}
+
+.NavBar .User Button{
+    background-color: magenta;
+}
+
+.NavBar .User Button:hover{
+    background-color: darkmagenta;
+}

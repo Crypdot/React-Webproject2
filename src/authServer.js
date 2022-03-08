@@ -139,7 +139,7 @@ app.post('/login', (req, res) =>{
 
       if(result.length === 0){
         console.log("Username not found")
-        return res.status(402).send("Username not found!")}
+        return res.status(222).send("Username not found!")}
 
       console.log("Username: "+req.body.username+" found, checking for a match now, against the password: "+req.body.password)
       let foundHashed = (result[0].password).toString()
@@ -159,7 +159,7 @@ app.post('/login', (req, res) =>{
         //res.json({accessToken: accessToken})
       }else{
         console.log("Password was incorrect!")
-        return res.status(401).send("Password incorrect") }
+        return res.status(223).send("Password incorrect") }
     }catch(e){
       console.log("Error in LOGIN -> "+e)
     }

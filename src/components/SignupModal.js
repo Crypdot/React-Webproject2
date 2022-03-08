@@ -60,10 +60,10 @@ const SignupModal = props =>{
   const signUp = async (event) => {
 
     event.preventDefault()
-    const form = event.currentTarget
-
-    if(form.checkValidity() === false){
-      event.stopPropagation()
+    const form = event.currentTarget;
+    if(form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
     }
 
     console.log("Got past the validity check")
@@ -85,7 +85,7 @@ const SignupModal = props =>{
             setMessage("Signup OK!")
             console.log("Signing up went okay!"+modalMessage)
 
-          }else if(response.status === 202){
+          }else if(response.status === 203){
             setMessage("This user exists already!")
             console.log("Testing -> "+modalMessage)
           }else{
@@ -103,6 +103,8 @@ const SignupModal = props =>{
 
   return(
       <div className={`modal ${props.show ? 'show' : ''}`}>
+        <div className="modal-content">
+
         <Form className="form" show={showSignup} onHide={handleClose}>
           <Form.Group className="mb-3" controlId="signUsername">
             <Form.Label>Username</Form.Label>
@@ -115,10 +117,11 @@ const SignupModal = props =>{
 
           <Form.Group className="mb-3" controlId="signEmail">
             <Form.Label>E-mail</Form.Label>
-            <Form.Control required
+            <Form.Control
                           type="email"
                           placeholder="Enter email"
-                          name="email" onChange={handleEmailChange} />
+                          name="email" onChange={handleEmailChange}
+                          required/>
             <Form.Text className="text-muted">
               We'll never share your email with anyone else.
             </Form.Text>
@@ -131,17 +134,18 @@ const SignupModal = props =>{
           <Button variant="primary" style={{background: 'orange', marginLeft: 20}} onClick={props.onClose}>Exit</Button>
         </Form>
 
-    <Modal show={modalShow} onHide={handleModalClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>Info</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>{modalMessage}</Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleModalClose}>
-          Close
-        </Button>
-      </Modal.Footer>
-    </Modal>
+          <Modal show={modalShow} onHide={handleModalClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>Info</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>{modalMessage}</Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleModalClose}>
+                Close
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </div>
   </div>
   )
 }

@@ -29,6 +29,7 @@ const LoginModal = props => {
   const handleReset = () =>{
     console.log("Testing -> "+modalMessage)
     formRef.current.reset()
+    setMessage("")
     setValidated(false)
   }
 
@@ -42,24 +43,21 @@ const LoginModal = props => {
   }
 
   const checkUser = async (event) => {
+    setMessage("blank!")
     console.log("Checking user!"+event)
 
     console.log(loginObject)
 
     event.preventDefault()
-    const form = event.currentTarget
-
-    if(form.checkValidity() === false){
-      event.stopPropagation()
+    const form = event.currentTarget;
+    if(form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
     }
 
     console.log("Got past the validity check")
     setValidated(true)
 
-    if(form.checkValidity() === false){
-      console.log("Form is invalid, returning!")
-      return
-    }
     updateLogin(username, passwd)
     console.log("CheckUser: loginObject: "+JSON.stringify(loginObject))
 
@@ -68,7 +66,8 @@ const LoginModal = props => {
         .then(response=>{
           console.log("response+post promise fulfilled ->"+loginObject)
         setStatus(response.status)
-        if(response.status === 202){
+
+        if(httpStatus === 202){
           setMessage("Login OK!")
           console.log("Login went okay!"+modalMessage)
 
@@ -78,13 +77,17 @@ const LoginModal = props => {
           token = localStorage.getItem(tokenKey)
           tokenObj = JSON.parse(token)
           console.log("From local storage -> "+tokenObj.accessToken)
-        }else if(response.status === 401){
+        }else if(httpStatus === 223){
           setMessage("Password is incorrect!")
           console.log("Testing -> "+modalMessage)
-        }else if(response.status === 402){
+        }else if(httpStatus === 222){
           setMessage("Username not found!")
           console.log("Testing -> "+modalMessage)
+        }else{
+          setMessage("Something unpredictable went wrong!")
+          console.log("Testing -> "+modalMessage)
         }
+        console.log("STATUS ===>>"+httpStatus)
         setModal(true)
       handleReset()
     })
@@ -102,38 +105,45 @@ const LoginModal = props => {
     }
   }
 
-  const switchViews = () => {
-    console.log("Show is ->"+show)
-    console.log("And signup is -> "+showSignup)
-    setShow(!show)
-    setSignup(!showSignup)
-  }
-
   return (
       <div className={`modal ${props.show ? 'show' : ''}`}>
-        <Form className={`form ${props.show ? 'show' : ''}`}  >
-          <Form.Group className="mb-3" controlId="formUsername">
-            <Form.Label>Username</Form.Label>
-            <Form.Control required
-                          placeholder="Enter username"
-                          name="username"
-                          onChange={handleUsernameChange} />
-            <Form.Text className="text-muted">
-              We'll never share your email with anyone else.
-            </Form.Text>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control required
-                          type="password"
-                          placeholder="Password"
-                          name="password"
-                          onChange={handlePasswordChange}/>
+        <div className="modal-content">
+          <Form className={`form ${props.show ? 'show' : ''}`}  >
+            <Form.Group className="mb-3" controlId="formUsername">
+              <Form.Label>Username</Form.Label>
+              <Form.Control required
+                            placeholder="Enter username"
+                            name="username"
+                            onChange={handleUsernameChange} />
+              <Form.Text className="text-muted">
+                We'll never share your email with anyone else.
+              </Form.Text>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formBasicPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control required
+                            type="password"
+                            placeholder="Password"
+                            name="password"
+                            onChange={handlePasswordChange}/>
+            </Form.Group>
+            <Button variant="primary" type="submit" onClick={checkUser}>Submit</Button>
+            <Button variant="primary" style={{background: 'orange', marginLeft: 20}} onClick={props.onClose}>Exit</Button>
+          </Form>
+        </div>
 
-          </Form.Group>
-          <Button variant="primary" type="submit" onClick={checkUser}>Submit</Button>
-          <Button variant="primary" style={{background: 'orange', marginLeft: 20}} onClick={props.onClose}>Exit</Button>
-        </Form>
+        <Modal show={modalShow} onHide={handleModalClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Info</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{modalMessage}</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleModalClose}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
       </div>
 
   );

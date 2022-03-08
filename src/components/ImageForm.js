@@ -81,6 +81,7 @@ const ImageForm = (props)  =>{
           timeout={{ enter: 0, exit: 300 }}
       >
       <div className="modal" >
+        <div className="modal-content">
           <Form encType="multipart/form-data" onSubmit={handleSubmit} >
             <Form.Group>
               <Form.Label>Title:</Form.Label>
@@ -101,7 +102,7 @@ const ImageForm = (props)  =>{
                   onChange={(e => setFile(e.target.files))}
                   required/>
             </Form.Group>
-            <Form.Label>Place:</Form.Label>
+            <Form.Label>Description:</Form.Label>
             <Form.Group>
               <Form.Control
                   type="text"
@@ -113,7 +114,9 @@ const ImageForm = (props)  =>{
 
             <Button type="submit">Send</Button>
             <Button onClick={props.onClose}>Close</Button>
-        </Form>
+          </Form>
+        </div>
+
       </div>
       </CSSTransition>
   )

@@ -13,7 +13,7 @@ import ImageForm from './ImageForm';
 import LoginModal from './LoginModal';
 import SignupModal from './SignupModal';
 import NavBar from './NavBar';
-
+import './Home.css'
 
 const Home = () => {
 
@@ -27,13 +27,7 @@ const Home = () => {
   const [commentData, setCommentdata] = useState([]);
   const [testID, setTestID] = useState([]);
 
-
   const handleClose = () => setShow(false);
-
-
-
-
-
 
   useEffect((postID, commentdata) => {
     console.log("Kuvatt testi");
@@ -89,17 +83,18 @@ const Home = () => {
   console.log(images);
   // console.log(images[4].ID)
   return (
+
       <div className="container">
-      <NavBar/>
-        <div>
+
+        <div className="Images">
           <Table >
             <tbody>{images.map((image, i) => {
               return [
                 <tr key={image.id}>
                   <td>
-                    <p>{image.title}</p>
+                    <p id="ImageTitle">{image.title}</p>
                     <img src={require(`../Images/${image.imagelink}`)} alt={image.title}/>
-                    <p>{image.description}</p>
+                    <p id="ImageDescription">{image.description}</p>
                     <Button onClick={() => {setShow(true); getComments(image.ID) }}>Show comments {image.ID}</Button>
 
                   </td>

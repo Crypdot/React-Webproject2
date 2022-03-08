@@ -9,14 +9,16 @@ import {
   Routes, Route, Link
 } from 'react-router-dom'
 import SignupModal from './components/SignupModal';
+import NavBar from './components/NavBar';
 
 function App() {
 
   return (
     <div className="App">
+      <NavBar className="NavBar"/>
     <Router>
       <Routes>
-        <Route path="/" element={<Home/>}></Route>
+        <Route path="/" element={<Home/>} />
       </Routes>
     </Router>
     </div>
