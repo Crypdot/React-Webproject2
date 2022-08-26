@@ -1,70 +1,74 @@
-# Getting Started with Create React App
+# BlogSite
+Ryhmä: Jarno Kaikkonen & Alexander San Miguel
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Projekti kuvaus
+Projektin tarkoitus oli luoda yksinkertainen blogi, jolle käyttäjät voivat lisätä haluamiaan kuvia. Tähän lisättiin nyt myös eri käyttäjien luonti, sekä niiden authorisointi. Kirjautumaton käyttäjä voi luoda tilin ja tarkastella kuvia sekä kommentteja, mutta ei pysty lisäämään näitä itse palvelimelle. Vasta kirjautunut käyttäjä voi tehdä molemmat. 
 
-## Available Scripts
+Olemme jakaneet palvelimet kahteen eri porttiin. simpleServer.js ja authServer.js 
 
-In the project directory, you can run:
+### Rest kutsut simpleServer-palvelimelle 
+simpleServer.js-käsittelee kuvien, sekä kommenttien lisäyksen palvelimelle.
 
-### `npm start`
+#### POST /upload-file
+Kutsua käytetään kun halutaan lähettää uusi kuva palvelimelle. Tällöin lähetetään sekä tiedosto, kuvalle oma otsake sekä kuvaus, että authorization-header, jolla tunnistetaan kuvan lähettäjä ja varmistetaan, että käyttäjällä on oikeus lisätä kuva palvelimelle. 
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+##### JSON-muoto
+{
+    dataFile: file,
+    postTitle: title,
+    postDescription: description
+}
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+#### GET /images
+Kutsu yksinkertaisesti hakee kaikki kuvat palvelimelta ja palauttaa JSON muodossa kuvan ID:n, linkin joka viittaa kuvan paikkaan palvelimella, otsakkeen ja kuvauksen.
 
-### `npm test`
+#### GET /comments
+Kutsua palauttaa halutun kuvan kaikki kommentit. Palvelimelle heitetään kuvan ID.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+##### JSON-muoto
+{
+    postID: queryID
+}
 
-### `npm run build`
+#### POST /add-comment (authenticateToken)
+Kutsu lisää käyttäjän haluaman kommentin tietylle kuvalle. Samalla tavoin, tälle annetaan sekä kuvan ID, että itse kommenttitieto. Lisäksi tälle lähetetään kutsun otsakkeessa JSON webtoken, joka on tallennettu käyttäjän selaimen local-storageen. Näin varmistetaan, että käyttäjällä on lupa kommentoida, sekä saadaan selville käyttäjänimi, joka voidaan lisätä myös tietokantaan.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Tietokantaan tallentuu kommentin sisältö, aika jolloin se on tehty, sekä viittaus käyttäjän ID:n
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+##### JSON-muoto
+headers: {Authorization: 'Bearer:'+tokenObj.accessToken} 
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+{
+    postID: postID,
+    commentdata: commentData
+}
 
-### `npm run eject`
+#### GET /fetch-image
+Kutsua palauttaa halutun kuvan linkin palvelimelta, ilman mitään muuta ylimääräistä. Palvelimelle heitetään kuvan ID.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+##### JSON-muoto
+{
+    postID: postID
+}
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Rest kutsut authServer-palvelimelle 
+authServer.js-käsittelee käyttäjien luomisen, sekä kirjautumisen palvelimelle.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+#### POST /signup
+Kutsu luo uuden käyttäjän, mikäli haluttua käyttäjänimeä tai sähköpostia ei löydy jo valmiiksi palvelimelta. Tälle annetaan kutsussa parametrit: käyttäjänimi, sähköposti ja salasana.  
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+##### JSON-muoto
+{
+    username: username,
+    email: email,
+    password: password
+}
 
-## Learn More
+#### POST /login
+Kutsu kirjaa käyttäjän sisään, mikäli käyttäjänimi löytyy palvelimelta, sekä annettu salasana täsmää oikein. Salasanaa ei tallenneta selkotekstinä palvelimella vaan käytetään bcryptiä suojaamaan tämä. Tälle annetaan kutsussa parametrit: käyttäjänimi ja salasana. Kirjauduttuaan sisään onnistuneesti, palvelin palauttaa JSON webtokenin, joka luodaan käyttäjänimen perusteella. Tämä tallennetaan käyttäjän selaimeen local storageen "myToken" nimikkeellä, joka menee umpeen puolen tunnin päästä.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+##### JSON-muoto
+{
+    username: username,
+    password: password
+}
