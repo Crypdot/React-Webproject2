@@ -1,7 +1,7 @@
 # BlogSite
 Ryhmä: Jarno Kaikkonen & Alexander San Miguel
 
-## Projekti kuvaus
+## Projektikuvaus
 Projektin tarkoitus oli luoda yksinkertainen blogi, jolle käyttäjät voivat lisätä haluamiaan kuvia. Tähän lisättiin nyt myös eri käyttäjien luonti, sekä niiden authorisointi. Kirjautumaton käyttäjä voi luoda tilin ja tarkastella kuvia sekä kommentteja, mutta ei pysty lisäämään näitä itse palvelimelle. Vasta kirjautunut käyttäjä voi tehdä molemmat. 
 
 Olemme jakaneet palvelimet kahteen eri porttiin. simpleServer.js ja authServer.js 
