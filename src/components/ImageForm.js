@@ -16,32 +16,10 @@ const ImageForm = (props)  =>{
 
     console.log(title, file, description)
     console.log(file[0])
-    /*
-      await fetch('http://localhost:8081/upload', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          file: file,
-          postTitle: title,
-          postDescription: description,
-        })
-      })
-          .then(res => res.json())
-
-  */
     const formData = new FormData();
     formData.append('dataFile', file[0]);
     formData.append('postTitle', title);
     formData.append('postDescription', description);
-    /*
-                const dataToSend = {
-                   file: file[0],
-                   postTitle: title,
-                   postDescription: description,
-                }
-    */
-    //console.log(formData.get('file'));
-    // console.log(formData.get('postTitle'))
     let tokenString, tokenObj, tokenKey = 'myToken'
     tokenString = localStorage.getItem(tokenKey)
 

@@ -28,7 +28,6 @@ var storage = multer.diskStorage({
 })
 var upload = multer({storage: storage})
 
-console.log("Tessssting the process env thing ->"+process.cwd())
 
 const app = new express();
 app.use(cors());
@@ -90,7 +89,6 @@ function authenticateToken(req, res, next){
   })
 }
 
-//PRIORITY 2 Testing uploading
 app.post('/upload-file',authenticateToken, upload.single('dataFile'), (req, res, next)=>{
   const file = req.file
 

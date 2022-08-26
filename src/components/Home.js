@@ -17,12 +17,9 @@ import './Home.css'
 
 const Home = () => {
 
- // const [showLogin, setShowLogin] = useState(false)
-//  const [showSign, setSign] = useState(false)
 
   const [images, setImages] = useState([]);
   const [show, setShow] = useState(false);
-//  const [uploadShow, setUploadShow] = useState(false);
   const [comments, setComments] = useState([]);
   const [commentData, setCommentdata] = useState([]);
   const [testID, setTestID] = useState([]);
@@ -55,33 +52,10 @@ const Home = () => {
 
 
   }
-  /*
-    const addComment = (postID, commentData) => {
-      console.log("testi");
-
-      axios.post('http://localhost:8081/addcomment?postID='+postID+"&commentField="+commentData)
-          .then(function (res) {
-            console.log("This"+res.data);
-
-          })
-
-
-    }
-    const handleCommentSubmit = (event) => {
-      const form = event.currentTarget;
-      console.log("here");
-      if (form.checkValidity() === false) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-      addComment(testID, commentData);
-    }
-  */
 
 
 
   console.log(images);
-  // console.log(images[4].ID)
   return (
 
       <div className="container">

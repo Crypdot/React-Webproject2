@@ -77,7 +77,7 @@ app.post('/signup', urlencodedParser, (req, res) =>{
         return res.status(203).send("Duplicate entry!")
       }else{
         console.log("Email doesn't exist, adding user!")
-        password = hashedPassword//Is there a point to doing it like this or am I just really tired?
+        password = hashedPassword
         console.log("Hashed: ", password)
 
         let sql = "INSERT INTO user (email, username, password) VALUES (?, ?, ?)"
